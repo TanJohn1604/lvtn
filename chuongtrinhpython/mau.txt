@@ -1,0 +1,16 @@
+rl_b = np.array([0, 81, 193])
+ru_b = np.array([7, 255, 255])
+
+rl_b2 = np.array([173, 81, 193])
+ru_b2 = np.array([180, 255, 255])
+
+
+bl_b = np.array([79, 47, 190])
+bu_b = np.array([113, 146, 255])
+
+bl_b2 = np.array([79, 47, 190])
+bu_b2 = np.array([113, 146, 255])
+
+
+
+main2.py =teseserial_v1.2
