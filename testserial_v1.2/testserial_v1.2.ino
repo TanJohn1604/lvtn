@@ -86,11 +86,11 @@ receiveData();
 buttonState = digitalRead(pushButton);
 buttonState2 = digitalRead(pushButton2);
 
-valsRec[1]=buttonState;
-valsRec[2]=buttonState2;
+valsRec[0]= buttonState * 1 + buttonState2*10;
+valsRec[1]=111;
+valsRec[2]=222;
 // print out the state of the button:
-digitalWrite(led5, valsRec[0]); 
-digitalWrite(led6, !valsRec[0]); 
+
 
 delay(5);        // delay in between reads for stability
 
