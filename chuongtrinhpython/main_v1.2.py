@@ -29,7 +29,8 @@ pre_state_yellow = 0
 pre_state_blue = 0
 
 blue_edge = 0
-
+dtav = 0
+startTime = time.time()
 
 def initConnection(port,baud):
     try:
@@ -253,15 +254,20 @@ while True:
         spilitdata[0] = str(1)
     if blue_edge == 0 and state_blue == 0:
         spilitdata[0] = str(0)
-    cv2.imshow('nanoCam', frame)
-    cv2.moveWindow('nanoCam', 0, 0)
-    if cv2.waitKey(1) == ord('q'):
-        break
-
     # -------------------------------------cap nhat trang thai cam bien --------------------------------------------
     pre_state_red = state_red
     pre_state_yellow = state_yellow
     pre_state_blue = state_blue
+    # ----------------------------------------------fps--------------------------------------------------------
 
+    dt = time.time() - startTime
+    startTime = time.time()
+    dtav = 0.9 * dtav + 0.1 * dt
+    fps = 1 / dtav
+    cv2.putText(frame, str(round(fps, 1)) + ' fps', (0, 30), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 1)
+    cv2.imshow('nanoCam', frame)
+    cv2.moveWindow('nanoCam', 0, 0)
+    if cv2.waitKey(1) == ord('q'):
+        break
 cam.release()
 cv2.destroyAllWindows()
