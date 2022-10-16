@@ -28,30 +28,36 @@ pre_state_red = 0
 pre_state_yellow = 0
 pre_state_blue = 0
 
+red_edge = 0
+yellow_edge = 0
 blue_edge = 0
+
+spilitdata1_number = 0
 dtav = 0
 startTime = time.time()
 
-def initConnection(port,baud):
+
+def initConnection(port, baud):
     try:
-        ser=serial.Serial(port,baud)
+        ser = serial.Serial(port, baud)
         print("Device connected")
         return ser
     except:
         print("Errorrrrrrr")
 
 
-def sendData(se,data,digits):
+def sendData(se, data, digits):
     global flag
-    myString="$"
+    myString = "$"
     for d in data:
-        myString+= str(d).zfill(digits)
+        myString += str(d).zfill(digits)
     try:
         se.write(myString.encode())
-        flag=1
-        print(myString)
+        flag = 1
+        # print(myString)
     except:
         print("send fail")
+
 
 # ---------------------------------------------serial------------------------------------------
 
@@ -60,13 +66,16 @@ def sendData(se,data,digits):
 # height = 480
 print(cv2.__version__)
 cam = cv2.VideoCapture(0)
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 # Or, if you have a WEB cam, uncomment the next line
 # (If it does not work, try setting to '1' instead of '0')
 # cam=cv2.VideoCapture(0)
 # Create tracker object
 tracker = EuclideanDistTracker()
 # ---------------------------------------------serial------------------------------------------
-ser=initConnection("COM4",9600)
+ser = initConnection("/dev/ttyUSB0", 9600)
+# ser=initConnection("COM4",9600)
 # ---------------------------------------------serial------------------------------------------
 while True:
     # ---------------------------------------------serial------------------------------------------
@@ -79,6 +88,8 @@ while True:
             data_serial = data_serial.strip('\r\n')
             spilitdata = data_serial.split(",")
             flag = 0
+            print(spilitdata)
+            # print(str(time.ctime()))
     # ---------------------------------------------serial------------------------------------------
     # ---------------------------------------------khoi camera-------------------------------------------------
     ret, frame = cam.read()
@@ -215,9 +226,9 @@ while True:
     indexsen = indexsen + 1
     indexsen = indexsen % 3
 
-    rsen[indexsen] = int(spilitdata[0])
-    ysen[indexsen] = int(spilitdata[1])
-    bsen[indexsen] = int(spilitdata[2])
+    rsen[indexsen] = int(bool(int(spilitdata[0]) & 1))
+    ysen[indexsen] = int(bool(int(spilitdata[0]) & 10))
+    bsen[indexsen] = int(bool(int(spilitdata[0]) & 100))
 
     if 1 not in rsen:
         state_red = 0
@@ -234,26 +245,53 @@ while True:
     if 0 not in bsen:
         state_blue = 1
 
-
     # -------------------------------------kiem tra nhieu cam bien --------------------------------------------
-    # if int(spilitdata[1]) == 1 and blue > 0:
-    #     blue = blue - 1
-    #     for key, da in data.items():
-    #         da[2] = da[2] - 1
-    #         if da[2] < 0:
-    #             da[2] = 0
-    # print(data)
+
+    if pre_state_red == 0 and state_red == 1:
+        # print(" rising edge ")
+        red_edge = 1
+    if pre_state_red == 1 and state_red == 0:
+        # print(" falling edge ")
+        red_edge = 0
+    if red_edge == 1 and state_red == 1:
+        spilitdata1_number |= 1
+        # print(" rising ")
+
+    if red_edge == 0 and state_red == 0:
+        spilitdata1_number &= 110
+        # print(" falling ")
+
+    # if pre_state_yellow == 0 and state_yellow == 1:
+    #     print(" rising edge ")
+    #     yellow_edge = 1
+    # if pre_state_yellow == 1 and state_yellow == 0:
+    #     print(" falling edge ")
+    #     yellow_edge = 0
+    # if yellow_edge == 1 and state_yellow == 1:
+    #     # spilitdata[0] = str(1)
+    #     print(" rising ")
+    #     # pass
+    # if yellow_edge == 0 and state_yellow == 0:
+    #     # spilitdata[0] = str(0)
+    #     print(" falling ")
+    #     # pass
 
     if pre_state_blue == 0 and state_blue == 1:
-        print(" rising edge ")
+        # print(" rising edge ")
         blue_edge = 1
     if pre_state_blue == 1 and state_blue == 0:
-        print(" falling edge ")
+        # print(" falling edge ")
         blue_edge = 0
     if blue_edge == 1 and state_blue == 1:
-        spilitdata[0] = str(1)
+        spilitdata1_number |= 100
+        # print(" rising ")
+        # pass
     if blue_edge == 0 and state_blue == 0:
-        spilitdata[0] = str(0)
+        spilitdata1_number &= 11
+        # print(" falling ")
+        # pass
+    spilitdata[1] = str(spilitdata1_number)
+
     # -------------------------------------cap nhat trang thai cam bien --------------------------------------------
     pre_state_red = state_red
     pre_state_yellow = state_yellow
