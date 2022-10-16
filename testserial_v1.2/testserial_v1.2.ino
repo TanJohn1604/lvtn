@@ -95,7 +95,7 @@ receiveData();
 buttonState = digitalRead(pushButton);
 buttonState2 = digitalRead(pushButton2);
 
-valsRec[0]= buttonState * 1 + buttonState2*10;
+valsRec[0]= buttonState * 1 + buttonState2*100;
 
 valsRec[2]=222;
 
@@ -108,7 +108,7 @@ else{
   curcheckservo_red=0;
 }
 
-if(valsRec[1] & 10){
+if(valsRec[1] & 100){
   curcheckservo_blue=1;
 }
 else{
