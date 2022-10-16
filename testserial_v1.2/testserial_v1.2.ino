@@ -17,15 +17,15 @@ int buttonState;
 int buttonState2;
 
 
-int curcheckservo1=0;
-int curcheckservo2=0;
-int precheckservo1=0;
-int precheckservo2=0;
+int curcheckservo_red=0;
+int curcheckservo_blue=0;
+int precheckservo_red=0;
+int precheckservo_blue=0;
 int statusservo1=0;
 int statusservo2=0;
 
-Servo myservo1;
-Servo myservo2;
+Servo myservo_red;
+Servo myservo_blue;
 void setup() {
 valsRec[0]=1;
 valsRec[1]=0;
@@ -34,8 +34,8 @@ Serial.begin(9600);
 pinMode(LED_BUILTIN, OUTPUT);
 pinMode(pushButton, INPUT);
 pinMode(pushButton2, INPUT);
-myservo1.attach(9); 
-myservo2.attach(10); 
+myservo_red.attach(9); 
+myservo_blue.attach(10); 
 }
 
 void receiveData(){
@@ -102,32 +102,32 @@ valsRec[2]=222;
 // servo1
 
 if(valsRec[1] & 1){
-  curcheckservo1=1;
+  curcheckservo_red=1;
 }
 else{
-  curcheckservo1=0;
+  curcheckservo_red=0;
 }
 
-if(valsRec[1] & 10){
-  curcheckservo2=1;
+if(valsRec[1] & 100){
+  curcheckservo_blue=1;
 }
 else{
-  curcheckservo2=0;
+  curcheckservo_blue=0;
 }
 
-if(precheckservo1 == curcheckservo1){
+if(precheckservo_red == curcheckservo_red){
   statusservo1=0;
 }
 
-if(precheckservo1 == 0 && curcheckservo1 == 1){
+if(precheckservo_red == 0 && curcheckservo_red == 1){
   statusservo1=1;
 }
 
-if(precheckservo2 == curcheckservo2){
+if(precheckservo_blue == curcheckservo_blue){
   statusservo2=0;
 }
 
-if(precheckservo2 == 0 && curcheckservo2 == 1){
+if(precheckservo_blue == 0 && curcheckservo_blue == 1){
   statusservo2=1;
 }
 
@@ -136,13 +136,13 @@ if(precheckservo2 == 0 && curcheckservo2 == 1){
 
 if( statusservo1 && statusservo2){
   for(int i=0;i<=180;i++){
-    myservo1.write(i);
-    myservo2.write(i); 
+    myservo_red.write(i);
+    myservo_blue.write(i); 
     delay(3);
   }
 for (int i = 180; i >= 0; i -= 1) { 
-    myservo1.write(i);   
-    myservo2.write(i);           
+    myservo_red.write(i);   
+    myservo_blue.write(i);           
     delay(3);
   }
   
@@ -150,12 +150,12 @@ for (int i = 180; i >= 0; i -= 1) {
 
 else if( statusservo1){
   for(int i=0;i<=180;i++){
-    myservo1.write(i);
+    myservo_red.write(i);
 
     delay(3);
   }
 for (int i = 180; i >= 0; i -= 1) { 
-    myservo1.write(i);   
+    myservo_red.write(i);   
          
     delay(3);
   }
@@ -165,19 +165,19 @@ for (int i = 180; i >= 0; i -= 1) {
 else if( statusservo2 ){
   for(int i=0;i<=180;i++){
 
-    myservo2.write(i); 
+    myservo_blue.write(i); 
     delay(3);
   }
 for (int i = 180; i >= 0; i -= 1) { 
  
-    myservo2.write(i);           
+    myservo_blue.write(i);           
     delay(3);
   }
   
 }
 
-precheckservo1 = curcheckservo1;
-precheckservo2 = curcheckservo2;
+precheckservo_red = curcheckservo_red;
+precheckservo_blue = curcheckservo_blue;
   
 //-----------------------------end do something -------------------------------
 }
