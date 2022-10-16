@@ -21,8 +21,8 @@ int curcheckservo_red=0;
 int curcheckservo_blue=0;
 int precheckservo_red=0;
 int precheckservo_blue=0;
-int statusservo1=0;
-int statusservo2=0;
+int statusservo_red=0;
+int statusservo_blue=0;
 
 Servo myservo_red;
 Servo myservo_blue;
@@ -108,7 +108,7 @@ else{
   curcheckservo_red=0;
 }
 
-if(valsRec[1] & 100){
+if(valsRec[1] & 10){
   curcheckservo_blue=1;
 }
 else{
@@ -116,25 +116,25 @@ else{
 }
 
 if(precheckservo_red == curcheckservo_red){
-  statusservo1=0;
+  statusservo_red=0;
 }
 
 if(precheckservo_red == 0 && curcheckservo_red == 1){
-  statusservo1=1;
+  statusservo_red=1;
 }
 
 if(precheckservo_blue == curcheckservo_blue){
-  statusservo2=0;
+  statusservo_blue=0;
 }
 
 if(precheckservo_blue == 0 && curcheckservo_blue == 1){
-  statusservo2=1;
+  statusservo_blue=1;
 }
 
 
 
 
-if( statusservo1 && statusservo2){
+if( statusservo_red && statusservo_blue){
   for(int i=0;i<=180;i++){
     myservo_red.write(i);
     myservo_blue.write(i); 
@@ -148,7 +148,7 @@ for (int i = 180; i >= 0; i -= 1) {
   
 }
 
-else if( statusservo1){
+else if( statusservo_red){
   for(int i=0;i<=180;i++){
     myservo_red.write(i);
 
@@ -162,7 +162,7 @@ for (int i = 180; i >= 0; i -= 1) {
   
 }
 
-else if( statusservo2 ){
+else if( statusservo_blue ){
   for(int i=0;i<=180;i++){
 
     myservo_blue.write(i); 
